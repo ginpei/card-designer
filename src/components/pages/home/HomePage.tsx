@@ -1,11 +1,36 @@
+import { AuthState, onAuthUIStateChange } from "@aws-amplify/ui-components";
+import {
+  AmplifyAuthenticator,
+  AmplifySignIn,
+  AmplifySignOut,
+  AmplifySignUp,
+} from "@aws-amplify/ui-react";
+import { useEffect, useState } from "react";
 import { BasicLayout } from "../../layouts/BasicLayout";
 
+// TODO find type
+interface UnknownAwsUser {
+  attributes: {
+    email: string;
+  };
+}
+
 export const HomePage: React.FC = () => {
+  const [user] = useAuth();
+
   return (
     <BasicLayout title="Home Page">
       <div className="HomePage">
         <div className="u-container">
           <h1>HomePage</h1>
+          {user ? (
+            <div>
+              <p>{user.attributes.email}</p>
+              <LogoutForm />
+            </div>
+          ) : (
+            <LoginForm />
+          )}
           <p>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus
             officia laborum nobis maxime possimus totam magni obcaecati aut
@@ -71,3 +96,56 @@ export const HomePage: React.FC = () => {
     </BasicLayout>
   );
 };
+
+const LoginForm: React.FC = () => {
+  return (
+    <AmplifyAuthenticator>
+      <AmplifySignIn
+        slot="sign-in"
+        formFields={[{ type: "email" }, { type: "password" }]}
+      />
+      <AmplifySignUp
+        slot="sign-up"
+        formFields={[{ type: "email" }, { type: "password" }]}
+      />
+    </AmplifyAuthenticator>
+  );
+};
+
+const LogoutForm: React.FC = () => {
+  return (
+    <div
+      style={{
+        boxSizing: "border-box",
+        margin: "auto",
+        padding: "35px 40px",
+        width: "28.75rem",
+      }}
+    >
+      <AmplifySignOut />
+    </div>
+  );
+};
+
+function useAuth(): [UnknownAwsUser | null, AuthState | null] {
+  const [user, setUser] = useState<UnknownAwsUser | null>(null);
+  const [state, setState] = useState<AuthState | null>(null);
+
+  useEffect(() => {
+    return onAuthUIStateChange((newState, newUser) => {
+      setUser(isUnknownAwsUser(newUser) ? newUser : null);
+      setState(newState);
+    });
+  }, []);
+
+  return [user, state];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isUnknownAwsUser(user: any): user is UnknownAwsUser {
+  if (typeof user !== "object" || user === null) {
+    return false;
+  }
+
+  return "attributes" in user && typeof user.attributes.email === "string";
+}
