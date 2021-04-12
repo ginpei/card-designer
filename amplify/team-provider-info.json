@@ -10,6 +10,11 @@
       "StackName": "amplify-carddesigner-dev-00543",
       "StackId": "arn:aws:cloudformation:us-west-2:201044561444:stack/amplify-carddesigner-dev-00543/7de4e9f0-9b5d-11eb-8a05-065e4333b4d9",
       "AmplifyAppId": "d2yd3jw0fo7srm"
+    },
+    "categories": {
+      "auth": {
+        "carddesignerac11dc88": {}
+      }
     }
   }
 }
