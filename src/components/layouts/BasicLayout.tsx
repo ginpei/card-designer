@@ -11,7 +11,7 @@ export const BasicLayout: React.FC<{ title: string }> = ({
         <title>{title}</title>
       </Head>
       <BasicHeader />
-      {children}
+      <div className="u-container">{children}</div>
     </div>
   );
 };
