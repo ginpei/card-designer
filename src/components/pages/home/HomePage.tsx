@@ -1,19 +1,11 @@
-import { AuthState, onAuthUIStateChange } from "@aws-amplify/ui-components";
 import {
   AmplifyAuthenticator,
   AmplifySignIn,
   AmplifySignOut,
   AmplifySignUp,
 } from "@aws-amplify/ui-react";
-import { useEffect, useState } from "react";
+import { useAuth } from "../../../data/login";
 import { BasicLayout } from "../../layouts/BasicLayout";
-
-// TODO find type
-interface UnknownAwsUser {
-  attributes: {
-    email: string;
-  };
-}
 
 export const HomePage: React.FC = () => {
   const [user] = useAuth();
@@ -126,26 +118,3 @@ const LogoutForm: React.FC = () => {
     </div>
   );
 };
-
-function useAuth(): [UnknownAwsUser | null, AuthState | null] {
-  const [user, setUser] = useState<UnknownAwsUser | null>(null);
-  const [state, setState] = useState<AuthState | null>(null);
-
-  useEffect(() => {
-    return onAuthUIStateChange((newState, newUser) => {
-      setUser(isUnknownAwsUser(newUser) ? newUser : null);
-      setState(newState);
-    });
-  }, []);
-
-  return [user, state];
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isUnknownAwsUser(user: any): user is UnknownAwsUser {
-  if (typeof user !== "object" || user === null) {
-    return false;
-  }
-
-  return "attributes" in user && typeof user.attributes.email === "string";
-}
