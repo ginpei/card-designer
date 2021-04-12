@@ -1,28 +1,16 @@
-import {
-  AmplifyAuthenticator,
-  AmplifySignIn,
-  AmplifySignOut,
-  AmplifySignUp,
-} from "@aws-amplify/ui-react";
-import { useAuth } from "../../../data/login";
+import Link from "next/link";
+import { loginPath } from "../../../../pages/login";
 import { BasicLayout } from "../../layouts/BasicLayout";
 
 export const HomePage: React.FC = () => {
-  const [user] = useAuth();
-
   return (
     <BasicLayout title="Home Page">
       <div className="HomePage">
         <div className="u-container">
           <h1>HomePage</h1>
-          {user ? (
-            <div>
-              <p>{user.attributes.email}</p>
-              <LogoutForm />
-            </div>
-          ) : (
-            <LoginForm />
-          )}
+          <p>
+            <Link href={loginPath()}>Login</Link>
+          </p>
           <p>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Natus
             officia laborum nobis maxime possimus totam magni obcaecati aut
@@ -86,35 +74,5 @@ export const HomePage: React.FC = () => {
         </div>
       </div>
     </BasicLayout>
-  );
-};
-
-const LoginForm: React.FC = () => {
-  return (
-    <AmplifyAuthenticator>
-      <AmplifySignIn
-        slot="sign-in"
-        formFields={[{ type: "email" }, { type: "password" }]}
-      />
-      <AmplifySignUp
-        slot="sign-up"
-        formFields={[{ type: "email" }, { type: "password" }]}
-      />
-    </AmplifyAuthenticator>
-  );
-};
-
-const LogoutForm: React.FC = () => {
-  return (
-    <div
-      style={{
-        boxSizing: "border-box",
-        margin: "auto",
-        padding: "35px 40px",
-        width: "28.75rem",
-      }}
-    >
-      <AmplifySignOut />
-    </div>
   );
 };
